@@ -64,7 +64,7 @@ from ImageBind.data import data
 
 class Galvatron(GalvatronBaseLM):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.imagebind_model = imagebind_model.imagebind_huge(pretrained=True).eval().to("cuda:0")
 
     def embed_multi_modal_inputs(self, text: str, image_path: str = None, audio_path: str = None):
@@ -93,48 +93,48 @@ class Galvatron(GalvatronBaseLM):
 
 ################# = V3
 
-class GalvatronMega(GalvatronBaseLM):
+class GalvatronImageBindLM(GalvatronBaseLM):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.imagebind_model = imagebind_model.imagebind_huge(pretrained=True).eval().to("cuda:0")
-
+        self.imagebind_model = imagebind_model.imagebind_huge(pretrained=True).eval().to('cuda:0')
 
     def embed_multimodal_inputs(self, modality, img_path, img_weight, text_path, text_weight, video_path, video_weight, audio_path, audio_weight, point_path, point_weight):
         inputs = {}
 
-        if "Image" in modality:
+        if 'Image' in modality:
             image = data.load_and_transform_vision_data([img_path], 'cuda:0')
             inputs['Image'] = [image, img_weight]
-
+        
         if 'Text' in modality:
             text = data.load_and_transform_text([text_path], 'cuda:0')
-
+            inputs['Text'] = [text, text_weight]
+        
         if 'Video' in modality:
             video = data.load_and_transform_video_data([video_path], 'cuda:0')
             inputs['Video'] = [video, video_weight]
-
+        
         if 'Audio' in modality:
             audio = data.load_and_transform_audio_data([audio_path], 'cuda:0')
             inputs['Audio'] = [audio, audio_weight]
-
+        
         if 'Point Cloud' in modality:
             point = data.load_and_transform_point_cloud_data([point_path], 'cuda:0')
-            inputs['Point cloud'] = [point, point_weight]
-
+            inputs['Point Cloud'] = [point, point_weight]
+        
         with torch.no_grad():
             embeddings = self.imagebind_model(inputs)
-
+        
         return embeddings
-    
+
     def generate(self, modality, img_path, img_weight, text_path, text_weight, video_path, video_weight, audio_path, audio_weight, point_path, point_weight, max_new_tokens: int = 100, output_type: str = 'Text'):
         embeddings = self.embed_multimodal_inputs(modality, img_path, img_weight, text_path, text_weight, video_path, video_weight, audio_path, audio_weight, point_path, point_weight)
-
+        
         if output_type == 'Text':
-            outputs = self.model.genrate(embeddings, max_new_token=max_new_tokens)
+            outputs = self.model.generate(embeddings, max_new_tokens=max_new_tokens)
             return self.tokenizer.decode(outputs[0], skip_special_tokens=True)
         
         elif output_type == 'Image':
-            raise NotImplemented("Image output is not yet implemented")
+            raise NotImplementedError('Image output is not yet implemented')
         
         else:
-            raise ValueError("Output type should not be recognized")
+            raise ValueError('Output type not recognized')
