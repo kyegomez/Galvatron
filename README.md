@@ -74,7 +74,7 @@ You can also share on social media:
 
 - [Share on Twitter](https://twitter.com/intent/tweet?text=Check+out+Galvatron%2C+a+multi-modal+conversational+model+that+leverages+the+power+of+MPT-30B%2C+and+multi-modal+adapters!&url=https%3A%2F%2Fgithub.com%2Fkyegomez%2FGalvatron)
 - [Share on LinkedIn](https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fgithub.com%2Fkyegomez%2FGalvatron&title=Galvatron&summary=Galvatron%20is%20a%20multi-modal%20conversational%20model%20that%20leverages%20the%20power%20of%20MPT-30B,%20and%20multi-modal%20adapters.%20Check%20it%20out!)
-- [Share on Facebook](https://www.facebook.com/sharer/sharer.php?u=https
+- [Share on Facebook](https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fgithub.com%2Fkyegomez%2FGalvatron)
 
 %3A%2F%2Fgithub.com%2Fkyegomez%2FGalvatron)
 
