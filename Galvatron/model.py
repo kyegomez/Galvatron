@@ -93,7 +93,7 @@ class Galvatron(GalvatronBaseLM):
 
 ################# = V3
 
-class GalvatronImageBindLM(GalvatronBaseLM):
+class GalvatronMega(GalvatronBaseLM):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.imagebind_model = imagebind_model.imagebind_huge(pretrained=True).eval().to('cuda:0')
@@ -138,3 +138,61 @@ class GalvatronImageBindLM(GalvatronBaseLM):
         
         else:
             raise ValueError('Output type not recognized')
+
+
+class GalvatronUltra(GalvatronBaseLM):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.imagebind_model = imagebind_model.imagebind_huge(pretrained=True).eval().to("cuda:0")
+
+    def embed_multimodal_inputs(self, modality_data):
+        inputs = {}
+        load_and_transform = {
+            'Image': data.load_and_transform_vision_data,
+            'Text': data.load_and_transform_text,
+            'Video': data.load_and_transform_video_data,
+            'Audio': data.load_and_transform_audio_data,
+            'Point Cloud': data.load_and_transform_point_cloud_data,
+        }
+
+        for modality, data_path in modality_data.items():
+            if data_path is not None:
+                transformed_data = load_and_transform[modality]([data_path], 'cuda:0')
+                inputs[modality] = transformed_data
+
+        with torch.no_grad():
+            embeddings = self.imagebind_model(inputs)
+
+        return embeddings
+    
+    def generate(self, modality_data, max_new_tokens: int = 100, output_type: str = 'Text'):
+        if not isinstance(modality_data, dict):
+            raise TypeError("modality_data must be of type dict")
+
+        for modality in modality_data:
+            if modality not in ['Image', 'Text', 'Video', 'Audio', 'Point Cloud']:
+                raise ValueError(f"Invalid modality: {modality}")
+
+        embeddings = self.embed_multimodal_inputs(modality_data)
+
+        if output_type == 'Text':
+            outputs = self.model.generate(embeddings, max_new_tokens=max_new_tokens)
+            return self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        
+        elif output_type == 'Image':
+            raise NotImplemented("Image output is not yet implemented")
+        
+        else:
+            raise ValueError("Output type not recognized")
+
+
+galvatronMega = GalvatronUltra(use_4bit_quantization=True)
+modality_data = {
+    "Text": "Text data",
+    "Image": "/path/to/image.jpg",
+    "Audio": "/path/to/audio.mp3",
+    # "Video": "/path/to/video.mp4",  # Uncomment if video data is available
+    # "Point Cloud": "/path/to/pointcloud.data",  # Uncomment if point cloud data is available
+}
+response = galvatronMega.generate(modality_data)
+print(response)

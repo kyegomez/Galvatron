@@ -101,14 +101,17 @@ print(response)
 Example usage with text and weighted image:
 
 ```python
-galvatronMega = GalvatronMega(use_4bit_quantization=True)
-modality = ["Text", "Image"]
-text_path = "Text data"
-img_path = "/path/to/image.jpg"
-text_weight = 0.5
-img_weight = 0.5
-response = galvatronMega.generate(modality, img_path, img_weight, text_path, text_weight, None, 0, None, 0, None, 0)
+galvatronMega = GalvatronUltra(use_4bit_quantization=True)
+modality_data = {
+    "Text": "Text data",
+    "Image": "/path/to/image.jpg",
+    "Audio": "/path/to/audio.mp3",
+    # "Video": "/path/to/video.mp4",  # Uncomment if video data is available
+    # "Point Cloud": "/path/to/pointcloud.data",  # Uncomment if point cloud data is available
+}
+response = galvatronMega.generate(modality_data)
 print(response)
+
 ```
 
 In this example, the 'Image' and 'Text' modalities are assigned equal weight. Please note that the code currently only supports text output; support for image output is not yet implemented.

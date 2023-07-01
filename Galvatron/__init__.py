@@ -1,1 +1,1 @@
-from Galvatron.model import GalvatronBaseLM
+from Galvatron.model import GalvatronBaseLM, Galvatron, GalvatronMega, GalvatronUltra
