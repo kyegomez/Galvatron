@@ -57,3 +57,34 @@ class GalvatronBaseLM:
 # text="What is your theory of everythibg"
 # response = galvatron.generate(text)
 # print(response)
+
+from ImageBind.models import imagebind_model
+from ImageBind.models.imagebind_model import ModalityType
+from ImageBind.data import data
+
+class Galvatron(GalvatronBaseLM):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs):
+        self.imagebind_model = imagebind_model.imagebind_huge(pretrained=True).eval().to("cuda:0")
+
+    def embed_multi_modal_inputs(self, text: str, image_path: str = None, audio_path: str = None):
+        #transform and load data
+        inputs = {
+            ModalityType.TEXT: data.load_and_transform_text([text], 'cuda:0')
+        }
+
+        if image_path is not None:
+            inputs[ModalityType.VISION] = data.load_and_transform_vision_data([image_path], 'cuda:0')
+
+        if audio_path is not None:
+            inputs[ModalityType.AUDIO] = data.load_and_transform_audio_dataset([audio_path], 'cuda:0')
+
+        with torch.no_grad():
+            embeddings = self.imagebind_model(inputs)
+
+        return embeddings
+    
+    def generate(self, text: str, image_path: str = None, audio_path: str = None, max_new_tokens: int = 100):
+        embeddings = self.embed_multi_modal_inputs(text, image_path, audio_path)
+        outputs = self.model.generate(embeddings, max_new_tokens=max_new_tokens)
+        return self.tokenizer.decode(outputs[0], skip_special_tokens=True)
