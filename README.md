@@ -10,11 +10,11 @@ Galvatron is an open-source conversational AI model that leverages the power of 
 
 ## Usage
 ```python
-from galvatron import Galvatron
+from Galvatron import GalvatronBaseLM
 
-model = Galvatron()
-
-response = model.process(input)
+galvatron = GalvatronBaseLM(use_4bit_quantization=True)
+text="What is your theory of everythibg"
+response = galvatron.generate(text)
 print(response)
 ```
 
