@@ -47,13 +47,13 @@ class GalvatronBaseLM:
         :param max_new_tokens: maximum number of new tokens for the generated text
         :return: generated text
         """
-        
+
         inputs = self.tokenizer(text, return_tensors="pt").to('cuda:0')
         outputs = self.model.generate(**inputs, max_new_tokens=max_new_tokens)
         return self.tokenizer.decode(outputs[0], skip_special_tokens=True)
 
 
-galvatron = GalvatronBaseLM(use_4bit_quantization=True)
-text="What is your theory of everythibg"
-response = galvatron.generate(text)
-print(response)
+# galvatron = GalvatronBaseLM(use_4bit_quantization=True)
+# text="What is your theory of everythibg"
+# response = galvatron.generate(text)
+# print(response)
