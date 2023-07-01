@@ -46,9 +46,9 @@ To get started with Galvatron, please refer to the example given below:
 ```python
 from galvatron import GalvatronBaseLM
 
-galvatron_base_lm = GalvatronBaseLM(use_4bit_quantization=True)
+galvatron = GalvatronBaseLM(use_4bit_quantization=True)
 text = "What is your theory of everything?"
-response = galvatron_base_lm.generate(text)
+response = galvatron.generate(text)
 print(response)
 ```
 
