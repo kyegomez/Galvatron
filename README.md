@@ -26,7 +26,7 @@ You can install Galvatron by two methods - using pip, or by cloning the reposito
 You can install Galvatron using pip as follows:
 
 ```shell
-pip install galvatron
+pip install Galvatron
 ```
 
 ### Clone the Repository
