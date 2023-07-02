@@ -1,10 +1,13 @@
-from Galvatron import GalvatronMega
+from Galvatron import GalvatronUltra
 
 
-galvatron = GalvatronMega(use_4bit_quantization=True)
-modality = ["Image"]
-img_path = "./examples/Tesla-robots.webp"
-
-img_weight = 1.0
-response = galvatron.generate(modality, img_path, img_weight, None, 0, None, 0, None, 0)
+galvatronMega = GalvatronUltra(use_4bit_quantization=True)
+modality_data = {
+    "Text": "Text data",
+    "Image": "examples/100-trillion.png",
+    # "Audio": "/path/to/audio.mp3",
+    # "Video": "/path/to/video.mp4",  # Uncomment if video data is available
+    # "Point Cloud": "/path/to/pointcloud.data",  # Uncomment if point cloud data is available
+}
+response = galvatronMega.generate(modality_data)
 print(response)
